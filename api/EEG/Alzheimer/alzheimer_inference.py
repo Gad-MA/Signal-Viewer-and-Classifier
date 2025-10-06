@@ -14,11 +14,23 @@ FREQ_BANDS = {
 mne.set_log_level('ERROR')
 warnings.filterwarnings('ignore')
 
-def predict(file: str, model: str = "alzheimer.joblib") :
- 
+def predict(file: str, model_path: str = None) :
     try:
+        # Get the directory where this script is located
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Set default model path if not provided
+        if model_path is None:
+            model_path = os.path.join(script_dir, "alzheimer.joblib")
+            
+        # Verify that the required files exist
+        if not os.path.exists(model_path):
+            return {"status": "error", "message": f"Model file not found at: {model_path}"}
+        if not os.path.exists(file):
+            return {"status": "error", "message": f"EEG file not found at: {file}"}
+            
         # loading model 
-        model = joblib.load(model)
+        model = joblib.load(model_path)
         raw = mne.io.read_raw_eeglab(file, preload=True)
         
         # preprocessing
@@ -70,7 +82,9 @@ def predict(file: str, model: str = "alzheimer.joblib") :
             "metadata": {
                 "file_processed": os.path.basename(file),
                 "total_epochs_analyzed": len(epochs),
-                "model_used": os.path.basename(model)
+                "model_used": os.path.basename(model_path),
+                "model_path": model_path,
+                "file_path": os.path.abspath(file)
             }
         }
 

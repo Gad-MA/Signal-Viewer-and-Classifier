@@ -55,22 +55,38 @@ class EEGNet(torch.nn.Module):
         x = self.dense(x)
         return x
 
-def inference(input_data, model_path, class_labels=["Healthy", "Parkinson's Disease"], device='cpu'):
+def inference(input_data, model_path=None, class_labels=["Healthy", "Parkinson's Disease"], device='cpu'):
+    """
+    Perform inference on EEG data for Parkinson's disease detection.
+    
+    Args:
+        input_data: Input EEG data
+        model_path: Optional path to model file. If None, uses default path relative to script
+        class_labels: List of class labels
+        device: Device to run inference on ('cpu' or 'cuda')
+    """
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Set default model path if not provided
+    if model_path is None:
+        model_path = os.path.join(script_dir, 'models', 'eegnet_finetuned.pt')
+    elif not os.path.isabs(model_path):
+        # If relative path is provided, make it relative to script directory
+        model_path = os.path.join(script_dir, model_path)
 
     if len(class_labels) != 2:
         raise ValueError("class_labels must be a list of exactly two strings.")
     
     if isinstance(input_data, list):
         input_data = np.array(input_data, dtype=np.float32)
-
     elif not isinstance(input_data, np.ndarray):
         raise ValueError("Input data must be a numpy array or list.")
     
     if len(input_data.shape) != 3 or input_data.shape[1] != 40 or input_data.shape[2] != 2500:
         raise ValueError(f"Input data must have shape (batch_size, 40, 2500). Got: {input_data.shape}")
     
-
-    model = EEGNet(2, 40, 2500,  0.5, 32, 8, 2, 2*8, 0.25, 'Dropout')
+    model = EEGNet(2, 40, 2500, 0.5, 32, 8, 2, 2*8, 0.25, 'Dropout')
     
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found at: {model_path}")
