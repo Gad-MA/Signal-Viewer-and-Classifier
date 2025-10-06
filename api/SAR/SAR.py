@@ -89,4 +89,3 @@ def visualize_random_image(folder_path: str):
 
 folder_path = "https://drive.google.com/drive/folders/1F9j3WH9nJQavy67GAN2gIPaoPR8hN6vX"
 
-# visualize_random_image(folder_path)
