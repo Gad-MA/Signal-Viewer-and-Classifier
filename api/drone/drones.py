@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
 import librosa
+import os
 
 # Audio preprocessing
 DESIRED_SR = 16000   # YAMNet requires 16 kHz audio
@@ -19,8 +20,18 @@ def load_wav_16k_mono(path, desired_sr=DESIRED_SR):
 yamnet_model_handle = "https://tfhub.dev/google/yamnet/1"
 yamnet_model = hub.load(yamnet_model_handle)
 
+# Get the directory where this script is located
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Load the trained classifier from the same directory as the script
+model_path = os.path.join(script_dir, "yamnet_drone_classifier.h5")
+
+# Check if model file exists
+if not os.path.exists(model_path):
+    raise FileNotFoundError(f"Model file not found at: {model_path}")
+
 # Load the trained classifier
-classifier = tf.keras.models.load_model("yamnet_drone_classifier.h5")
+classifier = tf.keras.models.load_model(model_path)
 
 def process_drone_audio(audio_path: str) -> str:
     """
