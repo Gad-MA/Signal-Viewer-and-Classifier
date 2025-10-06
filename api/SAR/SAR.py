@@ -58,23 +58,10 @@ def analyze_sar_image(image_path: str):
 
     print(f"Estimated Land: {land_pct:.2f}% | Water: {water_pct:.2f}%")
 
-    # Show results
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    axes[0].imshow(image, cmap='gray')
-    axes[0].set_title("Original SAR (Grayscale)")
-
-    axes[1].imshow(mask, cmap='gray')
-    axes[1].set_title("Land/Water Mask")
-
-    axes[2].imshow(image, cmap='gray')
-    axes[2].imshow(mask, cmap='jet', alpha=0.4)
-    axes[2].set_title("Overlay")
-
-    for ax in axes:
-        ax.axis('off')
-
-    plt.tight_layout()
-    plt.show()
+    return {
+        'land': f"{land_pct:.2f}%",
+        'water': f"{water_pct:.2f}%"
+    }
 
 
 def visualize_random_image(folder_path: str):
