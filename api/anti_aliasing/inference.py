@@ -5,8 +5,8 @@ import numpy as np
 import soundfile as sf
 import os
 
-SAMPLE_RATE = 16000
-AUDIO_DURATION = 15.0  
+SAMPLE_RATE = 22050.0
+AUDIO_DURATION = 8.0 
 class LightweightAudioAutoencoder(nn.Module):
 
     def __init__(self):
@@ -153,7 +153,6 @@ def denoise_audio(audio: np.ndarray, sample_rate: int, device: str) -> np.ndarra
 
 def restore_and_clean_audio(
     input_path: str,
-    output_path: str,
     model_path: str = "best_model.pth" # you can change that 
 ) -> np.ndarray:
 
@@ -168,7 +167,7 @@ def restore_and_clean_audio(
     
     if original_sr >= 16000:
         print("   No aliasing detected")
-        sf.write(output_path, original_audio, original_sr)
+        # sf.write(output_path, original_audio, original_sr)
         return original_audio
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -193,9 +192,9 @@ def restore_and_clean_audio(
         final_audio = restored_audio
     
 
-    sf.write(output_path, final_audio, SAMPLE_RATE)
+    # sf.write(output_path, final_audio, SAMPLE_RATE)
 
-    return final_audio
+    return final_audio, sr
 
 
 # ============================================================
