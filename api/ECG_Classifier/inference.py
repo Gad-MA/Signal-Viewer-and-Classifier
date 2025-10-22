@@ -15,7 +15,7 @@ if gpus:
 
 _model = None
 
-def predict_ecg_arrhythmia(record_name, pn_dir, model_path='ecg_full_model.h5'):
+def predict_ecg_arrhythmia(signal, model_path='ecg_full_model.h5'):
     global _model
     
     if _model is None:
@@ -29,21 +29,20 @@ def predict_ecg_arrhythmia(record_name, pn_dir, model_path='ecg_full_model.h5'):
         b, a = butter(order, [low, high], btype='band')
         return lfilter(b, a, signal)
     
-    try:
-        record = wfdb.rdrecord(record_name, pn_dir=pn_dir)
-    except Exception as e:
-        return f"Error loading record: {str(e)}"
+    # try:
+    #     record = wfdb.rdrecord(record_name, pn_dir=pn_dir)
+    # except Exception as e:
+    #     return f"Error loading record: {str(e)}"
+     
     
-    signal = record.p_signal
-    fs = record.fs  
-    
+    fs = signal.shape[0]
 
     if signal.shape[1] != 12:
         return "Error: The model expects 12-lead ECG data."
-    if signal.shape[0] != 5000:
-        return "Error: The model expects ECG data of length 5000 samples (10 seconds at 500 Hz)."
-    if fs != 500:
-        return "Error: The model expects data sampled at 500 Hz."
+    # if signal.shape[0] != 5000:
+    #     return "Error: The model expects ECG data of length 5000 samples (10 seconds at 500 Hz)."
+    # if fs != 500:
+    #     return "Error: The model expects data sampled at 500 Hz."
     
     for ch in range(12):
         signal[:, ch] = bandpass_filter(signal[:, ch], fs=fs)
