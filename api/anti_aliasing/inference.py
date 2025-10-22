@@ -153,9 +153,14 @@ def denoise_audio(audio: np.ndarray, sample_rate: int, device: str) -> np.ndarra
 
 def restore_and_clean_audio(
     input_path: str,
-    model_path: str = "best_model.pth" # you can change that 
+    model_path: str = None # you can change that 
 ) -> np.ndarray:
 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+        
+    # Set default model path if not provided
+    if model_path is None:
+        model_path = os.path.join(script_dir, "best_model.pth")
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found at '{model_path}'")
