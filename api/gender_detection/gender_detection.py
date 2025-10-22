@@ -47,20 +47,13 @@ def predict_gender(model, device, audio_path):
             label_map = {0: "female", 1: "male"}
             return label_map.get(gender_idx, str(gender_idx))
 
-def main():
+def infer_gender_from_audio(audio_path):
     install_dependencies()
     model, device = load_model()
-
-    print("\n Enter path to an audio file:")
-    audio_path = input("> ").strip()
 
     if not os.path.exists(audio_path):
         print(f"File not found: {audio_path}")
         return
 
     prediction = predict_gender(model, device, audio_path)
-    print(f"\n Prediction for '{audio_path}': {prediction}")
-
-
-if __name__ == "__main__":
-    main()
+    return prediction
