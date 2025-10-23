@@ -156,8 +156,6 @@ def restore_and_clean_audio(
     model_path: str = None # you can change that 
 ) -> np.ndarray:
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    y_speech, sr_speech = librosa.load(os.path.join(script_dir, "speech.wav"), sr=None)
-
     # Set default model path if not provided
     if model_path is None:
         model_path = os.path.join(script_dir, "best_model.pth")
